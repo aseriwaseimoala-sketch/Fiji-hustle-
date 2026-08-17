@@ -159,8 +159,44 @@ else if(hits.length===1) box.innerHTML='<div class="notice"><b>⚠️ Caution:</
 else box.innerHTML='<div class="notice"><b>✅ No obvious red flag detected.</b> This does not prove the offer is safe.</div>';
 }
 function showToast(msg){const t=document.getElementById('fhToast');if(!t){const d=document.createElement('div');d.id='fhToast';d.className='toast';document.body.appendChild(d)}const e=document.getElementById('fhToast');e.textContent=msg;e.style.display='block';clearTimeout(window.fhToastTimer);window.fhToastTimer=setTimeout(()=>e.style.display='none',2200)}
-function saveProfile(){localStorage.setItem('fh_profile',JSON.stringify({name:pname.value,area:parea.value}));saved.textContent='Saved on this device.'}
+async function saveProfile(){
+  const name = document.getElementById('pname').value.trim();
+  const area = document.getElementById('parea').value.trim();
+
+  if(!name || !area){
+    alert('Please enter your name and area first.');
+    return;
+  }
+
+  async function saveProfile(){
+  const name = document.getElementById('pname').value.trim();
+  const area = document.getElementById('parea').value.trim();
+
+  if(!name || !area){
+    alert('Please enter your name and area first.');
+    return;
+  }
+try {
+  const { collection, addDoc } = await import(
+    "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js"
+  );
+
+  await addDoc(collection(window.db, "profiles"), {
+    name: name,
+    area: area,
+    createdAt: new Date().toISOString()
+  });
+
+  document.getElementById('saved').textContent =
+    'Profile saved successfully! 🎉';
+
+} catch(error) {
+  console.error(error);
+  alert('Could not save profile. Check your Firebase connection.');
+}
+
 render();
 </script>
 </body>
 </html>
+  
