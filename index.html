@@ -149,20 +149,15 @@ function openModal(kind,data){
  document.getElementById('modal').classList.remove('hide');
 }
 function closeModal(){document.getElementById('modal').classList.add('hide')}
-function savePost(){
- const x={id:'u'+Date.now(),type:document.getElementById('postType').value,title:document.getElementById('postTitle').value,meta:document.getElementById('postMeta').value,price:document.getElementById('postPrice').value,text:document.getElementById('postText').value,tag:'New'};
- if(!x.title||!x.text){alert('Add a title and description first.');return}
- userPosts.unshift(x);localStorage.setItem('fh_posts',JSON.stringify(userPosts));closeModal();render();alert('Saved on this device.');}
 function checkScam(){
  const t=(document.getElementById('scamText').value||'').toLowerCase();
  const flags=['send money','pay first','verification code','otp','password','pin','guaranteed','double your money','crypto','gift card','urgent','western union','mpaisa password'];
  const hits=flags.filter(x=>t.includes(x));
  const box=document.getElementById('scamResult');
- if(hits.length>=2) box.innerHTML='<div class="notice"><b>🚨 High warning:</b> this message contains several scam red flags. Do not send money or account codes. Verify the person/business independently.</div>';
- else if(hits.length===1) box.innerHTML='<div class="notice"><b>⚠️ Caution:</b> I found a possible red flag. Verify before acting.</div>';
- else box.innerHTML='<div class="notice"><b>✅ No obvious red flag detected.</b> This does not prove the offer is safe.</div>';
+if(hits.length>=2) box.innerHTML='<div class="notice"><b>🚨 High warning:</b> this message contains several scam red flags. Do not send money or account codes. Verify the person/business independently.</div>';
+else if(hits.length===1) box.innerHTML='<div class="notice"><b>⚠️ Caution:</b> I found a possible red flag. Verify before acting.</div>';
+else box.innerHTML='<div class="notice"><b>✅ No obvious red flag detected.</b> This does not prove the offer is safe.</div>';
 }
-
 function showToast(msg){const t=document.getElementById('fhToast');if(!t){const d=document.createElement('div');d.id='fhToast';d.className='toast';document.body.appendChild(d)}const e=document.getElementById('fhToast');e.textContent=msg;e.style.display='block';clearTimeout(window.fhToastTimer);window.fhToastTimer=setTimeout(()=>e.style.display='none',2200)}
 function saveProfile(){localStorage.setItem('fh_profile',JSON.stringify({name:pname.value,area:parea.value}));saved.textContent='Saved on this device.'}
 render();
