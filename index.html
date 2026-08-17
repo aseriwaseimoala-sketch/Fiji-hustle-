@@ -22,7 +22,10 @@ textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px
 .modal{position:fixed;inset:0;background:#0008;display:flex;align-items:flex-end;z-index:10}.sheet{background:#fff;width:100%;max-width:720px;margin:auto;border-radius:24px 24px 0 0;padding:20px;max-height:90vh;overflow:auto}
 @media(min-width:600px){.modal{align-items:center;padding:20px}.sheet{border-radius:24px}}
 .small{font-size:12px;color:var(--muted)}a{color:#15803d;font-weight:700}
-
+.modal.hide{
+display:none !important;
+pointer-events:none !important;
+}
 /* Fiji Hustle v2 upgrade */
 :root{--brand:#0b7a4b;--brand2:#075e43;--soft:#eaf7f0;--shadow:0 8px 28px rgba(16,35,28,.08)}
 .top{background:linear-gradient(145deg,#062b20,#0b5f3d 58%,#0a3d2e);box-shadow:0 8px 30px rgba(0,0,0,.12)}
