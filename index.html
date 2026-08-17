@@ -167,7 +167,6 @@ async function saveProfile(){
     alert('Please enter your name and area first.');
     return;
   }
-
   async function saveProfile(){
   const name = document.getElementById('pname').value.trim();
   const area = document.getElementById('parea').value.trim();
@@ -180,13 +179,12 @@ try {
   const { collection, addDoc } = await import(
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js"
   );
-
   await addDoc(
   collection(window.db, "profiles"),
     {
-    name: name,
-    area: area,
-    createdAt: new Date().toISOString()
+  name: name,
+  area: area,
+  m  createdAt: new Date().toISOString()
   });
 
   document.getElementById('saved').textContent =
@@ -195,9 +193,7 @@ try {
 } catch(error) {
   console.error(error);
   alert('Could not save profile. Check your Firebase connection.');
-}
-
-render();
+}render();
 </script>
 </body>
 </html>
