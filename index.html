@@ -22,6 +22,16 @@ textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px
 .modal{position:fixed;inset:0;background:#0008;display:flex;align-items:flex-end;z-index:10}.sheet{background:#fff;width:100%;max-width:720px;margin:auto;border-radius:24px 24px 0 0;padding:20px;max-height:90vh;overflow:auto}
 @media(min-width:600px){.modal{align-items:center;padding:20px}.sheet{border-radius:24px}}
 .small{font-size:12px;color:var(--muted)}a{color:#15803d;font-weight:700}
+
+/* Fiji Hustle v2 upgrade */
+:root{--brand:#0b7a4b;--brand2:#075e43;--soft:#eaf7f0;--shadow:0 8px 28px rgba(16,35,28,.08)}
+.top{background:linear-gradient(145deg,#062b20,#0b5f3d 58%,#0a3d2e);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.card,.job{box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease}.card:active,.job:active{transform:scale(.985)}
+.btn.green{background:var(--brand)}
+.pill{background:var(--soft);color:#09633e}
+.search{box-shadow:0 8px 22px #0002}
+.filterbar{display:flex;gap:8px;overflow:auto;margin:0 0 12px}.filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;white-space:nowrap}.filter.active{background:var(--brand);color:#fff}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 15px;border-radius:999px;font-size:12px;font-weight:800;z-index:30;box-shadow:var(--shadow)}
 </style>
 </head>
 <body>
@@ -53,7 +63,7 @@ textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px
   <div class="list" id="featured"></div>
 </section>
 
-<section id="jobs" class="hide"><div class="section-title"><h2>💼 Jobs</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div><div class="list" id="jobsList"></div></section>
+<section id="jobs" class="hide"><div class="section-title"><h2>💼 Jobs</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div><div class="filterbar" id="jobFilters"></div><div class="list" id="jobsList"></div></section>
 <section id="hustles" class="hide"><div class="section-title"><h2>💰 Side hustles</h2></div><div class="list" id="hustlesList"></div></section>
 <section id="market" class="hide"><div class="section-title"><h2>🛍️ Buy & Sell</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div><div class="list" id="marketList"></div></section>
 <section id="safety" class="hide">
@@ -61,7 +71,7 @@ textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px
   <div class="card"><p>Paste a message or offer below. This is a simple warning tool, not a guarantee.</p><textarea id="scamText" rows="6" placeholder="Example: Send $50 first and I'll double it..."></textarea><button class="btn green full" onclick="checkScam()">Check it</button><div id="scamResult" style="margin-top:12px"></div></div>
   <div class="notice" style="margin-top:12px"><b>Never send:</b> passwords, verification codes, banking PINs, or money to someone promising guaranteed returns. Meet buyers/sellers safely and verify businesses.</div>
 </section>
-<section id="profile" class="hide"><div class="section-title"><h2>👤 My profile</h2></div><div class="card"><h3>Your local profile</h3><label>Name</label><input id="pname" placeholder="Your name"><label>Area</label><input id="parea" placeholder="e.g. Suva"><button class="btn green full" onclick="saveProfile()">Save profile</button><p id="saved" class="small"></p></div></section>
+<section id="profile" class="hide"><div class="section-title"><h2>👤 My profile</h2></div><div class="card"><h3>Your local profile</h3><label>Name</label><input id="pname" placeholder="Your name"><label>Area</label><input id="parea" placeholder="e.g. Suva"><button class="btn green full" onclick="saveProfile()">Save profile</button><p id="saved" class="small"></p></div><div class="card" style="margin-top:12px"><h3>❤️ Saved listings</h3><div id="favoritesList"></div></div></section>
 </main>
 
 <nav class="bottom">
@@ -87,17 +97,18 @@ const hustles=[
 {title:'Reselling',meta:'Marketplace • Local',price:'Profit margin',text:'Find legitimate bargains, clean/photograph items and resell transparently.'}
 ];
 let userPosts=JSON.parse(localStorage.getItem('fh_posts')||'[]');
-
-function allItems(){return [...baseJobs,...userPosts]}
-function render(){
- const q=(document.getElementById('search').value||'').toLowerCase();
- const match=x=>JSON.stringify(x).toLowerCase().includes(q);
- const card=x=>`<div class="job"><div class="row"><div><h3>${escapeHtml(x.title)}</h3><div class="small">${escapeHtml(x.meta||'Fiji')}</div></div><span class="pill">${escapeHtml(x.tag||'Listing')}</span></div><div class="price">${escapeHtml(x.price||'See details')}</div><p style="margin:7px 0;color:#6b7280;font-size:13px">${escapeHtml(x.text||'')}</p><button class="btn ghost" onclick="alert('Demo listing: contact details would appear here after the owner verifies the listing.')">View details</button></div>`;
- document.getElementById('featured').innerHTML=allItems().filter(match).slice(0,3).map(card).join('');
- document.getElementById('jobsList').innerHTML=allItems().filter(x=>x.type==='Jobs'&&match(x)).map(card).join('');
- document.getElementById('marketList').innerHTML=allItems().filter(x=>x.type==='Market'&&match(x)).map(card).join('');
- document.getElementById('hustlesList').innerHTML=hustles.filter(match).map(card).join('');
-}
+let favorites=JSON.parse(localStorage.getItem('fh_favs')||'[]');
+let activeJobFilter='All';
+function allJobs(){return [...baseJobs,...userPosts.filter(x=>x.type==='Jobs')]}
+function allMarket(){return userPosts.filter(x=>x.type==='Market')}
+function allItems(){return [...allJobs(),...allMarket()]}
+function match(x){const q=(document.getElementById('search').value||'').toLowerCase();return !q||JSON.stringify(x).toLowerCase().includes(q)}
+function card(x){const fav=favorites.includes(x.id||x.title);return `<div class="job"><div class="row"><div><h3>${escapeHtml(x.title)}</h3><div class="small">${escapeHtml(x.meta||'Fiji')}</div></div><span class="pill">${escapeHtml(x.tag||'Listing')}</span></div><div class="price">${escapeHtml(x.price||'See details')}</div><p style="margin:7px 0;color:#6b7280;font-size:13px">${escapeHtml(x.text||'')}</p><div style="display:flex;gap:8px"><button class="btn green" style="flex:1" onclick="viewListing('${escapeHtml(x.id||x.title)}')">View details</button><button class="btn ghost" onclick="toggleFav('${escapeHtml(x.id||x.title)}')">${fav?'❤️':'♡'}</button></div></div>`}
+function render(){const jobs=allJobs().filter(match).filter(x=>activeJobFilter==='All'||(x.meta||'').toLowerCase().includes(activeJobFilter.toLowerCase()));const market=allMarket().filter(match);document.getElementById('featured').innerHTML=allItems().filter(match).slice(0,4).map(card).join('')||'<div class="small">No matching listings yet.</div>';document.getElementById('jobsList').innerHTML=jobs.map(card).join('')||'<div class="small">No jobs match your search.</div>';document.getElementById('marketList').innerHTML=market.map(card).join('')||'<div class="small">No market listings yet. Tap ＋ Post to add one.</div>';document.getElementById('hustlesList').innerHTML=hustles.filter(match).map(card).join('')||'<div class="small">No hustles match your search.</div>';renderFilters();renderFavorites()}
+function renderFilters(){const areas=['All','Suva','Nadi','Lautoka','Labasa','Remote'];const el=document.getElementById('jobFilters');if(el)el.innerHTML=areas.map(a=>`<button class="filter ${activeJobFilter===a?'active':''}" onclick="activeJobFilter='${a}';render()">${a}</button>`).join('')}
+function toggleFav(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem('fh_favs',JSON.stringify(favorites));render();showToast(favorites.includes(id)?'Saved ❤️':'Removed from saved')}
+function renderFavorites(){const el=document.getElementById('favoritesList');if(!el)return;const items=allItems().filter(x=>favorites.includes(x.id||x.title));el.innerHTML=items.length?items.map(card).join(''):'<div class="small">No saved listings yet. Tap ♡ on a listing.</div>'}
+function viewListing(id){const x=allItems().find(a=>(a.id||a.title)===id);if(!x)return;openModal('detail',x)}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function showTab(tab){
  document.querySelectorAll('main section').forEach(s=>s.classList.add('hide'));
@@ -106,9 +117,10 @@ function showTab(tab){
  render();
  scrollTo({top:0,behavior:'smooth'});
 }
-function openModal(kind){
+function openModal(kind,data){
  const sheet=document.getElementById('sheet');
- if(kind==='post') sheet.innerHTML=`<h2>Post a Fiji listing</h2><p class="small">This first version stores posts on this device. For a public app, we'll connect it to a free database later.</p>
+ if(kind==='detail'){sheet.innerHTML=`<h2>${escapeHtml(data.title)}</h2><p class="small">${escapeHtml(data.meta||'Fiji')}</p><h3 class="price">${escapeHtml(data.price||'Contact poster')}</h3><p class="desc">${escapeHtml(data.text||'')}</p><div class="notice"><b>Safety:</b> Verify the person, item and payment details independently. Never share OTPs, PINs or passwords.</div><button class="btn green full" onclick="closeModal()">Done</button>`;document.getElementById('modal').classList.remove('hide');return;}
+ if(kind==='post') sheet.innerHTML=`<h2>Post a Fiji listing</h2><p class="small">This version stores posts on this device. The next upgrade can connect everyone to a shared online database.</p>
  <label>Category</label><select id="postType"><option value="Jobs">Job</option><option value="Market">Buy & Sell</option></select>
  <label>Title</label><input id="postTitle" placeholder="e.g. Weekend event helper">
  <label>Area</label><input id="postMeta" placeholder="e.g. Suva • Part-time">
@@ -120,7 +132,7 @@ function openModal(kind){
 }
 function closeModal(){document.getElementById('modal').classList.add('hide')}
 function savePost(){
- const x={type:document.getElementById('postType').value,title:document.getElementById('postTitle').value,meta:document.getElementById('postMeta').value,price:document.getElementById('postPrice').value,text:document.getElementById('postText').value,tag:'New'};
+ const x={id:'u'+Date.now(),type:document.getElementById('postType').value,title:document.getElementById('postTitle').value,meta:document.getElementById('postMeta').value,price:document.getElementById('postPrice').value,text:document.getElementById('postText').value,tag:'New'};
  if(!x.title||!x.text){alert('Add a title and description first.');return}
  userPosts.unshift(x);localStorage.setItem('fh_posts',JSON.stringify(userPosts));closeModal();render();alert('Saved on this device.');}
 function checkScam(){
@@ -132,6 +144,8 @@ function checkScam(){
  else if(hits.length===1) box.innerHTML='<div class="notice"><b>⚠️ Caution:</b> I found a possible red flag. Verify before acting.</div>';
  else box.innerHTML='<div class="notice"><b>✅ No obvious red flag detected.</b> This does not prove the offer is safe.</div>';
 }
+
+function showToast(msg){const t=document.getElementById('fhToast');if(!t){const d=document.createElement('div');d.id='fhToast';d.className='toast';document.body.appendChild(d)}const e=document.getElementById('fhToast');e.textContent=msg;e.style.display='block';clearTimeout(window.fhToastTimer);window.fhToastTimer=setTimeout(()=>e.style.display='none',2200)}
 function saveProfile(){localStorage.setItem('fh_profile',JSON.stringify({name:pname.value,area:parea.value}));saved.textContent='Saved on this device.'}
 render();
 </script>
