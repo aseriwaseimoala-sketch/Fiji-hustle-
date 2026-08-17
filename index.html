@@ -86,7 +86,22 @@ pointer-events:none !important;
 </div>
 
 <div id="modal" class="modal hide" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyCIBQftlmGZtJxQ1ns6brXyuSXnc84gLQQ",
+    authDomain: "fiji-hustle.firebaseapp.com",
+    projectId: "fiji-hustle",
+    storageBucket: "fiji-hustle.firebasestorage.app",
+    messagingSenderId: "727092850500",
+    appId: "1:727092850500:web:311d9894c3c91b0aa87111"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+</script>
 <script>
 const baseJobs=[
 {type:'Jobs',title:'Storefront Assistant — Grounding Review',meta:'Remote • 5–10 h/week',price:'~$1.33/task',tag:'Open',text:'Example opportunity. Always check the official project terms before applying.'},
