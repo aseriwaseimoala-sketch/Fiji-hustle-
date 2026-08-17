@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="Fiji Hustle — local jobs, side hustles, buy & sell, and scam awareness for Fiji.">
+<link rel="manifest" href="manifest.json">
+<title>Fiji Hustle 🇫🇯</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#111827;--muted:#6b7280;--brand:#16a34a;--brand2:#0f766e;--dark:#0f172a;--line:#e5e7eb;--warn:#fff7ed}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:720px;margin:auto;min-height:100vh;padding-bottom:82px}.top{background:linear-gradient(135deg,#0f172a,#14532d);color:white;padding:22px 18px 24px;border-radius:0 0 28px 28px}
+.brand{font-weight:900;font-size:25px}.tag{opacity:.85;margin-top:4px}.hero{margin-top:20px;font-size:30px;line-height:1.05;font-weight:900}.hero small{display:block;font-size:15px;line-height:1.4;font-weight:500;opacity:.85;margin-top:10px}
+.search{margin-top:18px;background:white;border-radius:14px;padding:13px 15px;color:#6b7280;display:flex;gap:8px;align-items:center}.search input{border:0;outline:0;width:100%;font-size:15px}
+main{padding:18px}.section-title{display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px}.section-title h2{font-size:20px;margin:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 2px 10px #00000008}.cat{font-size:28px}.card h3{font-size:16px;margin:8px 0 5px}.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+.list{display:grid;gap:12px}.job{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px}.job .row{display:flex;justify-content:space-between;gap:12px}.pill{background:#dcfce7;color:#166534;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;white-space:nowrap}.price{font-weight:900;color:#15803d;margin-top:8px}.btn{border:0;border-radius:12px;padding:11px 14px;background:var(--dark);color:white;font-weight:800;font-size:14px;cursor:pointer}.btn.green{background:var(--brand)}.btn.ghost{background:#eef2f7;color:#111827}.btn.full{width:100%;margin-top:10px}
+textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;background:white}label{font-size:13px;font-weight:700;display:block;margin:12px 0 6px}
+.notice{background:var(--warn);border:1px solid #fed7aa;border-radius:16px;padding:14px;font-size:13px;line-height:1.45}.hide{display:none}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(720px,100%);background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:5}.nav{border:0;background:none;color:#6b7280;font-size:11px;font-weight:700}.nav.active{color:#15803d}.nav span{display:block;font-size:20px;margin-bottom:2px}
+.earn{background:linear-gradient(135deg,#dcfce7,#ecfeff);border:1px solid #bbf7d0}.money{font-size:25px;font-weight:900}
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:flex-end;z-index:10}.sheet{background:#fff;width:100%;max-width:720px;margin:auto;border-radius:24px 24px 0 0;padding:20px;max-height:90vh;overflow:auto}
+@media(min-width:600px){.modal{align-items:center;padding:20px}.sheet{border-radius:24px}}
+.small{font-size:12px;color:var(--muted)}a{color:#15803d;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">🇫🇯 Fiji Hustle</div>
+  <div class="tag">Find it. Do it. Earn it.</div>
+  <div class="hero">Real opportunities for Fiji.<small>Jobs, side hustles, buy & sell, and scam awareness — built for people in Fiji.</small></div>
+  <div class="search">🔎 <input id="search" placeholder="Search jobs, hustles or listings..." oninput="render()"></div>
+</header>
+
+<main>
+<section id="home">
+  <div class="section-title"><h2>Browse</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div>
+  <div class="grid">
+    <div class="card" onclick="showTab('jobs')"><div class="cat">💼</div><h3>Jobs</h3><p>Casual work, part-time and local opportunities.</p></div>
+    <div class="card" onclick="showTab('hustles')"><div class="cat">💰</div><h3>Side hustles</h3><p>Ideas you can start with little or no money.</p></div>
+    <div class="card" onclick="showTab('market')"><div class="cat">🛍️</div><h3>Buy & Sell</h3><p>Local listings for Fiji.</p></div>
+    <div class="card" onclick="showTab('safety')"><div class="cat">🛡️</div><h3>Scam checker</h3><p>Quick checks before you send money or data.</p></div>
+  </div>
+
+  <div class="card earn" style="margin-top:14px">
+    <div class="money">💵 Earn with Fiji Hustle</div>
+    <p style="margin:6px 0">Once the app has users, income can come from ads and paid business promotions. Users stay free.</p>
+    <button class="btn green full" onclick="openModal('advertise')">Advertise a business</button>
+  </div>
+
+  <div class="section-title" style="margin-top:22px"><h2>Featured opportunities</h2></div>
+  <div class="list" id="featured"></div>
+</section>
+
+<section id="jobs" class="hide"><div class="section-title"><h2>💼 Jobs</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div><div class="list" id="jobsList"></div></section>
+<section id="hustles" class="hide"><div class="section-title"><h2>💰 Side hustles</h2></div><div class="list" id="hustlesList"></div></section>
+<section id="market" class="hide"><div class="section-title"><h2>🛍️ Buy & Sell</h2><button class="btn ghost" onclick="openModal('post')">＋ Post</button></div><div class="list" id="marketList"></div></section>
+<section id="safety" class="hide">
+  <div class="section-title"><h2>🛡️ Scam checker</h2></div>
+  <div class="card"><p>Paste a message or offer below. This is a simple warning tool, not a guarantee.</p><textarea id="scamText" rows="6" placeholder="Example: Send $50 first and I'll double it..."></textarea><button class="btn green full" onclick="checkScam()">Check it</button><div id="scamResult" style="margin-top:12px"></div></div>
+  <div class="notice" style="margin-top:12px"><b>Never send:</b> passwords, verification codes, banking PINs, or money to someone promising guaranteed returns. Meet buyers/sellers safely and verify businesses.</div>
+</section>
+<section id="profile" class="hide"><div class="section-title"><h2>👤 My profile</h2></div><div class="card"><h3>Your local profile</h3><label>Name</label><input id="pname" placeholder="Your name"><label>Area</label><input id="parea" placeholder="e.g. Suva"><button class="btn green full" onclick="saveProfile()">Save profile</button><p id="saved" class="small"></p></div></section>
+</main>
+
+<nav class="bottom">
+<button class="nav active" data-tab="home" onclick="showTab('home')"><span>🏠</span>Home</button>
+<button class="nav" data-tab="jobs" onclick="showTab('jobs')"><span>💼</span>Jobs</button>
+<button class="nav" data-tab="hustles" onclick="showTab('hustles')"><span>💰</span>Hustles</button>
+<button class="nav" data-tab="profile" onclick="showTab('profile')"><span>👤</span>Profile</button>
+</nav>
+</div>
+
+<div id="modal" class="modal hide" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const baseJobs=[
+{type:'Jobs',title:'Storefront Assistant — Grounding Review',meta:'Remote • 5–10 h/week',price:'~$1.33/task',tag:'Open',text:'Example opportunity. Always check the official project terms before applying.'},
+{type:'Jobs',title:'Casual event helper',meta:'Suva • Part-time',price:'Ask employer',tag:'Local',text:'Sample listing — replace with a real verified employer before publishing.'},
+{type:'Market',title:'Used phone',meta:'Suva • Buy & sell',price:'FJ$250',tag:'For sale',text:'Sample listing.'}
+];
+const hustles=[
+{title:'Sell food/snacks',meta:'Start small • Local customers',price:'Low startup',text:'Pre-order snacks or lunch boxes and take payment on delivery/pickup.'},
+{title:'Social media help',meta:'Businesses • Remote/local',price:'Charge per job',text:'Offer simple posting, captions, photos and replies for small businesses.'},
+{title:'Tutoring',meta:'Students • Fiji',price:'Set your rate',text:'Offer help with subjects you know well. Meet safely or use video calls.'},
+{title:'Reselling',meta:'Marketplace • Local',price:'Profit margin',text:'Find legitimate bargains, clean/photograph items and resell transparently.'}
+];
+let userPosts=JSON.parse(localStorage.getItem('fh_posts')||'[]');
+
+function allItems(){return [...baseJobs,...userPosts]}
+function render(){
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ const match=x=>JSON.stringify(x).toLowerCase().includes(q);
+ const card=x=>`<div class="job"><div class="row"><div><h3>${escapeHtml(x.title)}</h3><div class="small">${escapeHtml(x.meta||'Fiji')}</div></div><span class="pill">${escapeHtml(x.tag||'Listing')}</span></div><div class="price">${escapeHtml(x.price||'See details')}</div><p style="margin:7px 0;color:#6b7280;font-size:13px">${escapeHtml(x.text||'')}</p><button class="btn ghost" onclick="alert('Demo listing: contact details would appear here after the owner verifies the listing.')">View details</button></div>`;
+ document.getElementById('featured').innerHTML=allItems().filter(match).slice(0,3).map(card).join('');
+ document.getElementById('jobsList').innerHTML=allItems().filter(x=>x.type==='Jobs'&&match(x)).map(card).join('');
+ document.getElementById('marketList').innerHTML=allItems().filter(x=>x.type==='Market'&&match(x)).map(card).join('');
+ document.getElementById('hustlesList').innerHTML=hustles.filter(match).map(card).join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function showTab(tab){
+ document.querySelectorAll('main section').forEach(s=>s.classList.add('hide'));
+ document.getElementById(tab).classList.remove('hide');
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+ render();
+ scrollTo({top:0,behavior:'smooth'});
+}
+function openModal(kind){
+ const sheet=document.getElementById('sheet');
+ if(kind==='post') sheet.innerHTML=`<h2>Post a Fiji listing</h2><p class="small">This first version stores posts on this device. For a public app, we'll connect it to a free database later.</p>
+ <label>Category</label><select id="postType"><option value="Jobs">Job</option><option value="Market">Buy & Sell</option></select>
+ <label>Title</label><input id="postTitle" placeholder="e.g. Weekend event helper">
+ <label>Area</label><input id="postMeta" placeholder="e.g. Suva • Part-time">
+ <label>Price/pay</label><input id="postPrice" placeholder="e.g. FJ$50/day">
+ <label>Description</label><textarea id="postText" rows="4" placeholder="Give clear, honest details"></textarea>
+ <button class="btn green full" onclick="savePost()">Save listing</button><button class="btn ghost full" onclick="closeModal()">Cancel</button>`;
+ if(kind==='advertise') sheet.innerHTML=`<h2>📣 Advertise a business</h2><p>Future monetization feature: businesses can pay to have verified listings promoted. For now, collect interest without charging anyone.</p><label>Business name</label><input id="biz" placeholder="Business name"><label>Contact</label><input id="contact" placeholder="Phone or social handle"><button class="btn green full" onclick="alert('Thanks! In the next version this will send the request to the app owner.')">Request promotion</button><button class="btn ghost full" onclick="closeModal()">Close</button>`;
+ document.getElementById('modal').classList.remove('hide');
+}
+function closeModal(){document.getElementById('modal').classList.add('hide')}
+function savePost(){
+ const x={type:document.getElementById('postType').value,title:document.getElementById('postTitle').value,meta:document.getElementById('postMeta').value,price:document.getElementById('postPrice').value,text:document.getElementById('postText').value,tag:'New'};
+ if(!x.title||!x.text){alert('Add a title and description first.');return}
+ userPosts.unshift(x);localStorage.setItem('fh_posts',JSON.stringify(userPosts));closeModal();render();alert('Saved on this device.');}
+function checkScam(){
+ const t=(document.getElementById('scamText').value||'').toLowerCase();
+ const flags=['send money','pay first','verification code','otp','password','pin','guaranteed','double your money','crypto','gift card','urgent','western union','mpaisa password'];
+ const hits=flags.filter(x=>t.includes(x));
+ const box=document.getElementById('scamResult');
+ if(hits.length>=2) box.innerHTML='<div class="notice"><b>🚨 High warning:</b> this message contains several scam red flags. Do not send money or account codes. Verify the person/business independently.</div>';
+ else if(hits.length===1) box.innerHTML='<div class="notice"><b>⚠️ Caution:</b> I found a possible red flag. Verify before acting.</div>';
+ else box.innerHTML='<div class="notice"><b>✅ No obvious red flag detected.</b> This does not prove the offer is safe.</div>';
+}
+function saveProfile(){localStorage.setItem('fh_profile',JSON.stringify({name:pname.value,area:parea.value}));saved.textContent='Saved on this device.'}
+render();
+</script>
+</body>
+</html>
